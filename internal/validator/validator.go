@@ -37,7 +37,7 @@ func NotBlank(value string) bool {
 }
 
 func MaxChars(value string, n int) bool {
-	return utf8.RuneCountInString(value) == n
+	return utf8.RuneCountInString(value) <= n
 }
 
 func PermittedInt(value int, permittedValues ...int) bool {
