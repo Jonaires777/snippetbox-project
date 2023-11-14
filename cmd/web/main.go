@@ -78,7 +78,7 @@ func main() {
 	}
 
 	infoLog.Printf("Starting server on %s", *addr)
-	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	err = srv.ListenAndServe() // I got to see what error is causing the TLS handshake to fail!
 	errorLog.Fatal(err)
 }
 
