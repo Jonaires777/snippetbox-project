@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -11,15 +12,18 @@ import (
 )
 
 func TestPing(t *testing.T) {
-	rr := httptest.NewRecorder()
+	app := application{
+		errorLog: log.New(io.Discard, "", 0),
+		infoLog:  log.New(io.Discard, "", 0),
+	}
 
-	// httptest.NewRequest does not return an error, it only returns a *http.Request
-	// so we don't need to check for an error
-	r := httptest.NewRequest(http.MethodGet, "/", nil)
+	ts := httptest.NewTLSServer(app.routes())
+	defer ts.Close()
 
-	ping(rr, r)
-
-	rs := rr.Result()
+	rs, err := ts.Client().Get(ts.URL + "/ping")
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	assert.Equal(t, rs.StatusCode, http.StatusOK)
 
